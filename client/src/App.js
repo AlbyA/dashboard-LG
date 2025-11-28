@@ -39,7 +39,9 @@ function App() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/data');
+      // Use environment variable for API URL, fallback to relative path
+      const apiUrl = process.env.REACT_APP_API_URL || '/api/data';
+      const response = await axios.get(apiUrl);
       const processedData = processData(response.data);
       setData(processedData);
       setError(null);
