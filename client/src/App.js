@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 import './App.css';
 import KPICards from './components/KPICards';
@@ -25,38 +25,7 @@ function App() {
     periodType: 'all',
   });
 
-  useEffect(() => {
-    fetchData();
-    // Auto-refresh every 60 seconds
-    const interval = setInterval(fetchData, 60000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    applyFilters();
-  }, [data, filters]);
-
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      // Use environment variable for API URL, fallback to relative path
-      const apiUrl = process.env.REACT_APP_API_URL || '/api/data';
-      const response = await axios.get(apiUrl);
-      const processedData = processData(response.data);
-      setData(processedData);
-      setError(null);
-    } catch (err) {
-      const errorMessage = err.response?.data?.error || err.message || 'Failed to load data.';
-      const errorDetails = err.response?.data?.details || '';
-      setError(`Error: ${errorMessage}${errorDetails ? `\n\nDetails: ${errorDetails}` : ''}`);
-      console.error('Full error:', err);
-      console.error('Error response:', err.response?.data);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const processData = (rawData) => {
+  const processData = useCallback((rawData) => {
     return rawData.map(row => {
       let dateGenerated = null;
       if (row['Date Generated']) {
@@ -83,9 +52,9 @@ function App() {
         'Experience (Years)': experience,
       };
     }).filter(row => row['Date Generated'] || row['Fit Score'] !== null);
-  };
+  }, []);
 
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let filtered = [...data];
 
     // Date range filter (using Date Generated column)
@@ -119,7 +88,38 @@ function App() {
     }
 
     setFilteredData(filtered);
-  };
+  }, [data, filters]);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      // Use environment variable for API URL, fallback to relative path
+      const apiUrl = process.env.REACT_APP_API_URL || '/api/data';
+      const response = await axios.get(apiUrl);
+      const processedData = processData(response.data);
+      setData(processedData);
+      setError(null);
+    } catch (err) {
+      const errorMessage = err.response?.data?.error || err.message || 'Failed to load data.';
+      const errorDetails = err.response?.data?.details || '';
+      setError(`Error: ${errorMessage}${errorDetails ? `\n\nDetails: ${errorDetails}` : ''}`);
+      console.error('Full error:', err);
+      console.error('Error response:', err.response?.data);
+    } finally {
+      setLoading(false);
+    }
+  }, [processData]);
+
+  useEffect(() => {
+    fetchData();
+    // Auto-refresh every 60 seconds
+    const interval = setInterval(fetchData, 60000);
+    return () => clearInterval(interval);
+  }, [fetchData]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [applyFilters]);
 
   if (loading && data.length === 0) {
     return (

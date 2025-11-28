@@ -83,6 +83,7 @@ function Filters({ data, filters, setFilters, filteredData, chartRefs = {} }) {
     } else if (periodType === 'all') {
       setFilters({ ...filters, dateRange: null, periodType: 'all' });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [periodType, selectedDate, selectedDateObj, selectedMonth, dateRange.start, dateRange.end]);
 
   const handleDateChange = (type, value) => {
