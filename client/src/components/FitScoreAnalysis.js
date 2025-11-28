@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, forwardRef } from 'react';
-import { Histogram, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BoxPlot } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import './FitScoreAnalysis.css';
 
 const FitScoreAnalysis = forwardRef(({ data }, ref) => {

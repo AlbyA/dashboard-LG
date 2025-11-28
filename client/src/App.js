@@ -7,7 +7,7 @@ import EmailStatus from './components/EmailStatus';
 import FitScoreAnalysis from './components/FitScoreAnalysis';
 import Filters from './components/Filters';
 import AdditionalInsights from './components/AdditionalInsights';
-import { parseDateDDMMYYYY, isSameDate, compareDates } from './utils/dateUtils';
+import { parseDateDDMMYYYY } from './utils/dateUtils';
 
 function App() {
   const connectionStatusRef = useRef(null);

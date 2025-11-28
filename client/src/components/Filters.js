@@ -3,7 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Filters.css';
 import { exportToPDF } from '../utils/exportToPDF';
-import { formatDateDDMMYYYY, dateToInputFormat, parseDateDDMMYYYY } from '../utils/dateUtils';
+import { formatDateDDMMYYYY, parseDateDDMMYYYY } from '../utils/dateUtils';
 
 function Filters({ data, filters, setFilters, filteredData, chartRefs = {} }) {
   const [dateRange, setDateRange] = useState({ start: null, end: null });

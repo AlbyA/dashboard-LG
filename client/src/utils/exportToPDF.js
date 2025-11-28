@@ -32,12 +32,11 @@ export async function exportToPDF(data, options = {}, chartRefs = {}) {
   const margin = 15;
   const contentWidth = pageWidth - (margin * 2);
 
-  // Light theme colors (matching Spark AI logo)
-  const primaryColor = [102, 126, 234]; // Purple-blue
-  const secondaryColor = [118, 75, 162]; // Purple
-  const lightBg = [245, 247, 250]; // Light background
-  const textColor = [44, 62, 80]; // Dark text
-  const lightText = [90, 108, 125]; // Light text
+          // Light theme colors (matching Spark AI logo)
+          const primaryColor = [102, 126, 234]; // Purple-blue
+          const lightBg = [245, 247, 250]; // Light background
+          const textColor = [44, 62, 80]; // Dark text
+          const lightText = [90, 108, 125]; // Light text
 
   // Helper function to format date
   const formatDate = (date) => {
