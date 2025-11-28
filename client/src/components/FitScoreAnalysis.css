@@ -1,0 +1,97 @@
+.fit-score-section {
+  background: white;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.1);
+  overflow: hidden;
+}
+
+.fit-score-section h2 {
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+  font-size: 1.5rem;
+  word-wrap: break-word;
+}
+
+.fit-score-grid {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .fit-score-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stats-container h3 {
+  margin-bottom: 1rem;
+  color: #5a6c7d;
+  font-size: 1.1rem;
+  word-wrap: break-word;
+}
+
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(245, 247, 250, 0.5);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.stats-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+  word-wrap: break-word;
+}
+
+.stats-table td:first-child {
+  font-weight: 500;
+  color: #5a6c7d;
+}
+
+.stats-table td:last-child {
+  text-align: right;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.chart-container {
+  min-height: 400px;
+  background: rgba(245, 247, 250, 0.5);
+  border-radius: 10px;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+.chart-container h3 {
+  margin-bottom: 1rem;
+  color: #5a6c7d;
+  font-size: 1.1rem;
+  word-wrap: break-word;
+}
+
+.boxplot-container {
+  margin-top: 2rem;
+  background: rgba(245, 247, 250, 0.5);
+  border-radius: 10px;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+.boxplot-container h3 {
+  margin-bottom: 1rem;
+  color: #5a6c7d;
+  font-size: 1.1rem;
+  word-wrap: break-word;
+}
+
+.no-data {
+  text-align: center;
+  color: #999;
+  padding: 2rem;
+  font-style: italic;
+}
