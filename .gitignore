@@ -5,6 +5,7 @@ credentials.json
 !package-lock.json
 !client/package.json
 !client/package-lock.json
+!vercel.json
 
 # Environment variables
 .env
