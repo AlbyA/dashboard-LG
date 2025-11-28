@@ -1,32 +1,19 @@
 const { google } = require('googleapis');
-const path = require('path');
-const fs = require('fs');
 
 async function getSheetData() {
   try {
-    // In Vercel, credentials.json should be in the root or use environment variables
-    // For security, consider using environment variables instead
-    const credentialsPath = path.join(process.cwd(), 'credentials.json');
-    
     let auth;
     
-    if (fs.existsSync(credentialsPath)) {
+    // Use environment variables for credentials
+    const credentials = process.env.GOOGLE_CREDENTIALS;
+    if (credentials) {
+      const keyFile = JSON.parse(credentials);
       auth = new google.auth.GoogleAuth({
-        keyFile: credentialsPath,
+        credentials: keyFile,
         scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
       });
     } else {
-      // Try to use environment variables for credentials
-      const credentials = process.env.GOOGLE_CREDENTIALS;
-      if (credentials) {
-        const keyFile = JSON.parse(credentials);
-        auth = new google.auth.GoogleAuth({
-          credentials: keyFile,
-          scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
-        });
-      } else {
-        throw new Error('Google Sheets API credentials not found. Please set up credentials.json or GOOGLE_CREDENTIALS environment variable.');
-      }
+      throw new Error('GOOGLE_CREDENTIALS environment variable not found.');
     }
 
     const sheets = google.sheets({ version: 'v4', auth });
@@ -69,7 +56,6 @@ async function getSheetData() {
     return data;
   } catch (error) {
     console.error('Error fetching sheet data:', error.message);
-    console.error('Full error:', error);
     throw error;
   }
 }

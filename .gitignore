@@ -1,11 +1,5 @@
 # Google Sheets API Credentials
 credentials.json
-*.json
-!package.json
-!package-lock.json
-!client/package.json
-!client/package-lock.json
-!vercel.json
 
 # Environment variables
 .env
@@ -45,3 +39,12 @@ Thumbs.db
 # Logs
 logs
 *.log
+
+# Python (if any)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
