@@ -41,14 +41,12 @@ Interactive dashboard for visualizing and analyzing lead data from Google Sheets
 
 ## Vercel Deployment
 
-See [VERCEL_DEPLOY.md](./VERCEL_DEPLOY.md) for detailed deployment instructions.
-
 ### Quick Deploy Steps:
 
 1. **Push to GitHub**
    ```bash
    git add .
-   git commit -m "Ready for deployment"
+   git commit -m "Ready for Vercel deployment"
    git push
    ```
 
@@ -62,8 +60,17 @@ See [VERCEL_DEPLOY.md](./VERCEL_DEPLOY.md) for detailed deployment instructions.
    - `GOOGLE_SHEET_ID`: Your Google Sheet ID
    - `GOOGLE_CREDENTIALS`: Full content of `credentials.json` (as JSON string)
 
-4. **Deploy**
+4. **Configure Project Settings**
+   In Vercel Dashboard → Settings → General:
+   - **Framework Preset**: Set to **"Other"**
+   - **Root Directory**: Leave empty
+   - **Build Command**: Leave empty (handled by `vercel.json`)
+   - **Output Directory**: Leave empty (handled by `vercel.json`)
+   - **Install Command**: Leave empty (handled by `vercel.json`)
+
+5. **Deploy**
    - Click "Deploy" or push to GitHub (auto-deploys)
+   - Build will automatically copy `index.html` and static files to root
 
 ## Project Structure
 
@@ -72,15 +79,28 @@ dashboard/
 ├── api/
 │   └── data.js              # Vercel serverless function
 ├── client/
-│   ├── src/
-│   │   ├── components/      # React components
-│   │   ├── utils/           # Utility functions
-│   │   └── App.js           # Main app component
-│   ├── public/              # Static assets
+│   ├── src/                 # React app source
+│   ├── public/              # Public assets
 │   └── package.json         # Frontend dependencies
+├── copy-build-to-root.js    # Script to copy build to root
 ├── vercel.json              # Vercel configuration
+├── index.html               # Generated during build (in root)
+├── static/                  # Generated during build (in root)
 └── package.json             # Root dependencies
 ```
+
+## How Vercel Deployment Works
+
+1. **Build Process**:
+   - Installs dependencies (root + client)
+   - Builds React app in `client/build/`
+   - Copies build files to root (`index.html`, `static/`, etc.)
+   - Serves from root directory
+
+2. **Routing**:
+   - `/api/*` → Serverless functions in `api/` directory
+   - `/*` → Serves `index.html` (React Router handles routing)
+   - Static assets served from `/static/`
 
 ## Environment Variables
 
@@ -99,6 +119,10 @@ dashboard/
 - **Charts**: Recharts
 - **PDF Export**: jsPDF, html2canvas
 - **Google Sheets**: Google Sheets API v4
+
+## Troubleshooting
+
+See [VERCEL_DEPLOY.md](./VERCEL_DEPLOY.md) and [VERCEL_DEPLOYMENT_CHECKLIST.md](./VERCEL_DEPLOYMENT_CHECKLIST.md) for detailed troubleshooting.
 
 ## License
 

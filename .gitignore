@@ -14,10 +14,14 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# React build
+# React build (source build directory)
 client/build/
 client/.pnp
 client/.pnp.js
+
+# Root build files are generated during Vercel build
+# They will be created by copy-build-to-root.js during deployment
+# We don't commit them, but Vercel generates them during build
 
 # Testing
 coverage/
