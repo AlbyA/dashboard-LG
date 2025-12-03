@@ -95,16 +95,67 @@ function App() {
       setLoading(true);
       // Use environment variable for API URL, fallback to relative path
       const apiUrl = process.env.REACT_APP_API_URL || '/api/data';
-      const response = await axios.get(apiUrl);
+      const response = await axios.get(apiUrl, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        responseType: 'json',
+        transformResponse: [(data) => {
+          // If data is already an object, return it
+          if (typeof data === 'object') {
+            return data;
+          }
+          // Try to parse as JSON
+          try {
+            return JSON.parse(data);
+          } catch (e) {
+            console.error('JSON parse error:', e);
+            console.error('Response data:', data);
+            throw new Error(`Failed to parse response: ${e.message}`);
+          }
+        }]
+      });
+      
+      // Validate response data
+      if (!response.data || !Array.isArray(response.data)) {
+        throw new Error('Invalid response format: expected an array');
+      }
+      
       const processedData = processData(response.data);
       setData(processedData);
       setError(null);
     } catch (err) {
-      const errorMessage = err.response?.data?.error || err.message || 'Failed to load data.';
-      const errorDetails = err.response?.data?.details || '';
+      let errorMessage = 'Failed to load data.';
+      let errorDetails = '';
+      
+      if (err.response) {
+        // Server responded with error
+        if (err.response.data) {
+          if (typeof err.response.data === 'string') {
+            try {
+              const parsed = JSON.parse(err.response.data);
+              errorMessage = parsed.error || err.message || errorMessage;
+              errorDetails = parsed.details || '';
+            } catch (e) {
+              errorMessage = err.response.data || err.message || errorMessage;
+            }
+          } else {
+            errorMessage = err.response.data.error || err.message || errorMessage;
+            errorDetails = err.response.data.details || '';
+          }
+        } else {
+          errorMessage = err.message || errorMessage;
+        }
+      } else if (err.request) {
+        errorMessage = 'No response from server. Please check your connection.';
+      } else {
+        errorMessage = err.message || errorMessage;
+      }
+      
       setError(`Error: ${errorMessage}${errorDetails ? `\n\nDetails: ${errorDetails}` : ''}`);
       console.error('Full error:', err);
       console.error('Error response:', err.response?.data);
+      console.error('Error request:', err.request);
     } finally {
       setLoading(false);
     }

@@ -1,249 +1,105 @@
-# Lead Management Dashboard (React/JavaScript)
+# Lead Management Dashboard
 
-A live, interactive dashboard built with React and Node.js that visualizes lead management data from Google Sheets with real-time updates, comprehensive analytics, and beautiful visualizations.
+Interactive dashboard for visualizing and analyzing lead data from Google Sheets.
 
 ## Features
 
-### 📊 Key Performance Indicators (KPIs)
-- **Total Leads with Fit Score**: Count of all leads that have a Fit Score assigned
-- **Invited Leads**: Number of leads with Connection Status "Ready to send" or "Sent"
-- **Accepted Leads**: Number of leads with Connection Status "ACCEPTED"
+- 📊 **Real-time Data**: Live updates from Google Sheets
+- 📈 **KPIs**: Total Leads, Invited Leads, Accepted Leads
+- 📅 **Date Filtering**: Daily, Weekly, Monthly, or All Dates
+- 📧 **Email Status Analysis**: Track email campaign performance
+- 🎯 **Fit Score Analysis**: Statistical analysis of lead quality
+- 📥 **PDF Reports**: Download comprehensive reports with charts
+- 🎨 **Modern UI**: Clean, responsive design
 
-### 📈 Visualizations
+## Quick Start (Local Development)
 
-1. **Connection Status Analysis**
-   - Daily trend line chart showing connection status over time
-   - Pie chart showing overall distribution of connection statuses
+1. **Install Dependencies**
+   ```bash
+   npm install
+   cd client && npm install && cd ..
+   ```
 
-2. **Email Status Analysis**
-   - Bar chart comparing email statuses across different email types
-   - Interactive pie charts for each email status type
+2. **Set Up Google Sheets API**
+   - Create a service account in Google Cloud Console
+   - Download credentials as `credentials.json`
+   - Place it in the root directory
+   - Share your Google Sheet with the service account email
 
-3. **Fit Score Analysis**
-   - Statistical summary (Average, Min, Max, Median, Std Dev)
-   - Histogram showing distribution of Fit Scores
-   - Box plot for detailed distribution analysis
+3. **Configure Environment Variables**
+   Create `.env` file in root:
+   ```
+   GOOGLE_SHEET_ID=your_sheet_id_here
+   ```
 
-4. **Additional Insights**
-   - Top 10 Current Employers
-   - Top 10 Locations
+4. **Run Development Server**
+   ```bash
+   npm run dev
+   ```
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:5000
 
-### 🔍 Interactive Filters
-- **Date Range**: Filter data by Date Generated
-- **Connection Status**: Filter by specific connection status
-- **Fit Score Range**: Filter by Fit Score range
+## Vercel Deployment
 
-### ⚡ Live Updates
-- Automatic data refresh every 60 seconds
-- Manual refresh button for instant updates
-- Real-time connection to Google Sheets
+See [VERCEL_DEPLOY.md](./VERCEL_DEPLOY.md) for detailed deployment instructions.
 
-## Prerequisites
+### Quick Deploy Steps:
 
-- **Node.js** (v14 or higher) - [Download here](https://nodejs.org/)
-- **npm** (comes with Node.js)
-- Google Cloud Project with Google Sheets API enabled
-- Access to the Google Sheet
+1. **Push to GitHub**
+   ```bash
+   git add .
+   git commit -m "Ready for deployment"
+   git push
+   ```
 
-## Setup Instructions
+2. **Import to Vercel**
+   - Go to [vercel.com](https://vercel.com)
+   - Click "Add New Project"
+   - Import your GitHub repository
 
-### Step 1: Install Dependencies
+3. **Add Environment Variables**
+   In Vercel Dashboard → Settings → Environment Variables:
+   - `GOOGLE_SHEET_ID`: Your Google Sheet ID
+   - `GOOGLE_CREDENTIALS`: Full content of `credentials.json` (as JSON string)
 
-Install both backend and frontend dependencies:
-
-```bash
-npm run install-all
-```
-
-Or install them separately:
-
-```bash
-# Install backend dependencies
-npm install
-
-# Install frontend dependencies
-cd client
-npm install
-cd ..
-```
-
-### Step 2: Set Up Google Sheets API Credentials
-
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project or select an existing one
-3. Enable the **Google Sheets API**:
-   - Navigate to "APIs & Services" > "Library"
-   - Search for "Google Sheets API"
-   - Click "Enable"
-4. Create a Service Account:
-   - Go to "APIs & Services" > "Credentials"
-   - Click "Create Credentials" > "Service Account"
-   - Fill in the service account details and create
-   - Click on the created service account
-   - Go to "Keys" tab > "Add Key" > "Create new key"
-   - Choose JSON format and download
-5. Rename the downloaded JSON file to `credentials.json`
-6. Place `credentials.json` in the project root directory (same level as `server.js`)
-7. **Important**: Share your Google Sheet with the service account email:
-   - Open the downloaded `credentials.json` file
-   - Find the `client_email` field (e.g., `your-service-account@project-id.iam.gserviceaccount.com`)
-   - Open your Google Sheet
-   - Click "Share" and add the service account email with "Viewer" permissions
-
-### Step 3: Configure Environment Variables
-
-Create a `.env` file in the project root:
-
-```env
-GOOGLE_SHEET_ID=1IzRN7J-0XDJbGQGFmom-7RutxOtgcwVM0oo6d4z5dWc
-PORT=5000
-```
-
-Or the app will use the default Sheet ID from the URL.
-
-### Step 4: Run the Dashboard
-
-#### Option 1: Run Both Server and Client Together (Recommended)
-
-```bash
-npm run dev
-```
-
-This will start:
-- Backend server on `http://localhost:5000`
-- React frontend on `http://localhost:3000`
-
-The dashboard will open automatically in your browser.
-
-#### Option 2: Run Separately
-
-**Terminal 1 - Backend:**
-```bash
-npm run server
-```
-
-**Terminal 2 - Frontend:**
-```bash
-npm run client
-```
+4. **Deploy**
+   - Click "Deploy" or push to GitHub (auto-deploys)
 
 ## Project Structure
 
 ```
 dashboard/
-├── server.js                 # Express backend server
-├── package.json              # Backend dependencies
-├── credentials.json          # Google Sheets API credentials (not in repo)
-├── .env                      # Environment variables (not in repo)
-├── client/                   # React frontend
-│   ├── public/
-│   │   └── index.html
+├── api/
+│   └── data.js              # Vercel serverless function
+├── client/
 │   ├── src/
-│   │   ├── App.js           # Main App component
-│   │   ├── App.css
-│   │   ├── index.js         # React entry point
-│   │   ├── index.css
-│   │   └── components/      # React components
-│   │       ├── KPICards.js
-│   │       ├── ConnectionStatus.js
-│   │       ├── EmailStatus.js
-│   │       ├── FitScoreAnalysis.js
-│   │       ├── Filters.js
-│   │       └── AdditionalInsights.js
+│   │   ├── components/      # React components
+│   │   ├── utils/           # Utility functions
+│   │   └── App.js           # Main app component
+│   ├── public/              # Static assets
 │   └── package.json         # Frontend dependencies
-└── README.md
+├── vercel.json              # Vercel configuration
+└── package.json             # Root dependencies
 ```
 
-## Data Columns Expected
+## Environment Variables
 
-The dashboard expects the following columns in your Google Sheet:
+### Local Development
+- `GOOGLE_SHEET_ID`: Google Sheet ID
+- `credentials.json`: Service account credentials file
 
-- Name
-- LinkedIN
-- Email
-- verification
-- Email 2
-- verification1
-- Mobile Number
-- Headline
-- Title
-- Current Employer
-- Current Employer (Domain)
-- List of previous worked companies
-- Location
-- Experience (Years)
-- Employment_history
-- **Fit Score** (numeric)
-- Reason
-- Message
-- Auto Generated Message
-- Date of invitation sent
-- **Connection Status** (text)
-- **Notification Email Sent (on accepting invitation)** (text)
-- **Email Status 1** (text)
-- **Email Status 2** (text)
-- **Date Generated** (date)
-
-## Troubleshooting
-
-### Error: "credentials.json not found"
-- Make sure you've downloaded the service account JSON key file
-- Rename it to exactly `credentials.json`
-- Place it in the same directory as `server.js` (project root)
-
-### Error: "Permission denied" or "Access denied"
-- Make sure you've shared the Google Sheet with the service account email
-- The service account email can be found in `credentials.json` under `client_email`
-- Grant at least "Viewer" permissions
-
-### No data showing
-- Verify the Google Sheet ID is correct in `.env` file
-- Check that the sheet has data in the expected columns
-- Ensure the service account has access to the sheet
-- Check the browser console and server logs for errors
-
-### Port already in use
-- Change the PORT in `.env` file
-- Or kill the process using the port:
-  - Windows: `netstat -ano | findstr :5000` then `taskkill /PID <PID> /F`
-  - Mac/Linux: `lsof -ti:5000 | xargs kill`
-
-### Charts not displaying
-- Check that the required columns exist in your Google Sheet
-- Verify the data types are correct (dates, numbers, etc.)
-- Some visualizations require data to be present
-- Check browser console for JavaScript errors
-
-## Building for Production
-
-To create a production build:
-
-```bash
-npm run build
-```
-
-This creates an optimized production build in `client/build/`. You can serve it with any static file server or deploy it to services like:
-- Vercel
-- Netlify
-- AWS S3 + CloudFront
-- Heroku
+### Vercel Production
+- `GOOGLE_SHEET_ID`: Google Sheet ID
+- `GOOGLE_CREDENTIALS`: Service account credentials (JSON string)
 
 ## Technologies Used
 
-- **React**: Frontend UI library
-- **Node.js/Express**: Backend server
-- **Recharts**: Interactive chart library
-- **Google APIs (googleapis)**: Google Sheets API integration
-- **Axios**: HTTP client for API calls
-- **date-fns**: Date manipulation library
+- **Frontend**: React, Recharts, React DatePicker
+- **Backend**: Node.js, Express (local) / Vercel Serverless Functions (production)
+- **Charts**: Recharts
+- **PDF Export**: jsPDF, html2canvas
+- **Google Sheets**: Google Sheets API v4
 
 ## License
 
-This project is open source and available for use and modification.
-
-## Support
-
-For issues or questions, please check:
-1. Google Sheets API documentation
-2. React documentation
-3. Recharts documentation
+MIT

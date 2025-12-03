@@ -6,14 +6,51 @@ async function getSheetData() {
     
     // Use environment variables for credentials
     const credentials = process.env.GOOGLE_CREDENTIALS;
-    if (credentials) {
-      const keyFile = JSON.parse(credentials);
+    if (!credentials) {
+      throw new Error('GOOGLE_CREDENTIALS environment variable not found.');
+    }
+
+    try {
+      let keyFile;
+      const trimmed = String(credentials).trim();
+      
+      // Try multiple parsing strategies
+      try {
+        keyFile = JSON.parse(trimmed);
+      } catch (e1) {
+        // Remove surrounding quotes if present
+        let cleaned = trimmed;
+        if ((cleaned.startsWith('"') && cleaned.endsWith('"')) || 
+            (cleaned.startsWith("'") && cleaned.endsWith("'"))) {
+          cleaned = cleaned.slice(1, -1);
+        }
+        cleaned = cleaned.replace(/\\"/g, '"').replace(/\\n/g, '\n');
+        
+        try {
+          keyFile = JSON.parse(cleaned);
+        } catch (e2) {
+          // Try extracting JSON from string
+          const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            keyFile = JSON.parse(jsonMatch[0]);
+          } else {
+            throw new Error(`Could not parse credentials: ${e1.message}`);
+          }
+        }
+      }
+
+      // Validate required fields
+      if (!keyFile || typeof keyFile !== 'object' || !keyFile.client_email || !keyFile.private_key) {
+        throw new Error('Invalid credentials: missing client_email or private_key');
+      }
+
       auth = new google.auth.GoogleAuth({
         credentials: keyFile,
         scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
       });
-    } else {
-      throw new Error('GOOGLE_CREDENTIALS environment variable not found.');
+    } catch (parseError) {
+      console.error('Error parsing GOOGLE_CREDENTIALS:', parseError.message);
+      throw new Error(`Invalid GOOGLE_CREDENTIALS format: ${parseError.message}`);
     }
 
     const sheets = google.sheets({ version: 'v4', auth });
@@ -65,7 +102,7 @@ module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
     res.status(200).end();
