@@ -57,14 +57,52 @@ dashboard/
 
 ## Troubleshooting
 
-### Build Fails
-- Check Vercel build logs
-- Ensure all dependencies are in `package.json` files
-- Verify Node.js version (Vercel uses 18.x by default)
+### Build Fails with "No entrypoint found"
+**Error:** `No entrypoint found in output directory: "client/build"`
+
+**Solution:** This happens when Vercel tries to detect the project type. The current `vercel.json` uses `@vercel/static-build` which should fix this. If you still see this error:
+
+1. **Check Vercel Project Settings:**
+   - Go to Vercel Dashboard → Your Project → Settings → General
+   - Under "Build & Development Settings":
+     - Framework Preset: Should be **"Other"** or **"Vite"** (not "Create React App")
+     - Root Directory: Leave empty (or set to `/`)
+     - Build Command: Leave empty (handled by `vercel.json`)
+     - Output Directory: Leave empty (handled by `vercel.json`)
+     - Install Command: Leave empty (handled by `vercel.json`)
+
+2. **Verify `client/package.json` has `vercel-build` script:**
+   ```json
+   "scripts": {
+     "vercel-build": "npm run build"
+   }
+   ```
+
+3. **If still failing, try this alternative `vercel.json`:**
+   ```json
+   {
+     "version": 2,
+     "buildCommand": "cd client && npm install && npm run build",
+     "outputDirectory": "client/build",
+     "installCommand": "npm install && cd client && npm install",
+     "framework": null,
+     "rewrites": [
+       {
+         "source": "/api/(.*)",
+         "destination": "/api/$1"
+       },
+       {
+         "source": "/(.*)",
+         "destination": "/index.html"
+       }
+     ]
+   }
+   ```
 
 ### 404 Error
 - Check `vercel.json` routes configuration
 - Ensure `client/package.json` has `"vercel-build": "npm run build"`
+- Verify `index.html` exists in `client/build/` after build
 
 ### API Returns Error
 - Check `GOOGLE_CREDENTIALS` format in Vercel
